@@ -22,43 +22,106 @@ button{
 }
 h2{color:#2563eb;margin-bottom:10px}
 .error{color:red;margin-top:10px}
+.toggle-btn{
+  margin-top:5px; background:#f3f3f3;color:#2563eb; border:none;cursor:pointer;padding:5px;border-radius:5px;
+}
 </style>
 </head>
 <body>
 
 <div class="card">
-  <h2>Login</h2>
-  <input type="email" id="user" placeholder="Gmail" required>
-  <input type="password" id="pass" placeholder="Password" required>
-  <button onclick="login()">Login</button>
+  <h2 id="formTitle">Login</h2>
+  <input type="email" id="email" placeholder="Gmail" required>
+  <input type="password" id="password" placeholder="Password" required>
+  <button id="submitBtn">Login</button>
   <div id="msg" class="error"></div>
+  <button class="toggle-btn" id="toggleBtn">Switch to Sign Up</button>
 </div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
 <script>
-// -------- CHANGE ADMIN LOGIN HERE --------
-const ADMIN_EMAIL = "admin@gmail.com"; // admin gmail
-const ADMIN_PASS = "12345"; // admin password
-// -----------------------------------------
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyCAU5ecL2IJypUmkXwVbt7f-wV-pdKkY9U",
+  authDomain: "shophut-a5f7f.firebaseapp.com",
+  projectId: "shophut-a5f7f",
+  storageBucket: "shophut-a5f7f.appspot.com",
+  messagingSenderId: "767008652056",
+  appId: "1:767008652056:web:1a4ed7feae55a31a533c6d",
+  measurementId: "G-M1G44X839C"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
-function login(){
-  let email = document.querySelector("#user").value.trim();
-  let pass = document.querySelector("#pass").value.trim();
+// Admin email
+const ADMIN_EMAIL = "admin@gmail.com";
 
-  if(email === ADMIN_EMAIL && pass === ADMIN_PASS){
-    // Admin login
-    localStorage.setItem("adminAuth","true");
-    localStorage.setItem("adminName", email);
-    window.location.href = "admin.html";
-  } else if(email.endsWith("@gmail.com") && email !== ""){
-    // Regular user login
-    localStorage.setItem("userLoggedIn","1");
-    localStorage.setItem("userEmail", email);
-    window.location.href = "index.html";
+let isLogin = true;
+
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const submitBtn = document.getElementById('submitBtn');
+const msg = document.getElementById('msg');
+const formTitle = document.getElementById('formTitle');
+const toggleBtn = document.getElementById('toggleBtn');
+
+// Toggle login/signup
+toggleBtn.addEventListener('click', ()=>{
+  isLogin = !isLogin;
+  formTitle.innerText = isLogin ? 'Login' : 'Sign Up';
+  submitBtn.innerText = isLogin ? 'Login' : 'Sign Up';
+  msg.innerText = '';
+});
+
+// Submit
+submitBtn.addEventListener('click', ()=>{
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  msg.innerText = '';
+
+  if(!email || !password){
+    msg.innerText = "Please fill all fields!";
+    return;
+  }
+
+  if(isLogin){
+    auth.signInWithEmailAndPassword(email, password)
+      .then(userCredential=>{
+        redirectUser(email);
+      })
+      .catch(err=>{
+        msg.innerText = err.message;
+      });
   } else {
-    document.querySelector("#msg").innerText = "Invalid credentials!";
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(userCredential=>{
+        redirectUser(email);
+      })
+      .catch(err=>{
+        msg.innerText = err.message;
+      });
+  }
+});
+
+// Redirect based on admin/user
+function redirectUser(email){
+  if(email === ADMIN_EMAIL){
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "index.html";
   }
 }
-</script>
 
+// Auto redirect if already logged in
+auth.onAuthStateChanged(user=>{
+  if(user){
+    if(user.email === ADMIN_EMAIL) window.location.href = "admin.html";
+    else window.location.href = "index.html";
+  }
+});
+</script>
 </body>
 </html>
