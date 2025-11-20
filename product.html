@@ -1,116 +1,22 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Product Details</title>
-<link rel="stylesheet" href="styles.css">
-<style>
-
-.product-page {
-  max-width: 700px;
-  margin: 20px auto;
-  display: flex;
-  flex-direction: column;   /* <<< FIXED: Info now under image */
-  align-items: center;
-  gap: 20px;
-  text-align: center;
-}
-
-.product-page img {
-  width: 320px;
-  height: 320px;
-  border-radius: 14px;
-  object-fit: cover;
-}
-
-.product-info {
-  width: 100%;
-}
-
-.product-info h2 { margin-top:0; }
-
-.price {
-  font-size: 22px;
-  font-weight: 800;
-  margin: 10px 0;
-}
-
-.btn {
-  padding:10px 14px; 
-  border:none; 
-  background:#6e7843; 
-  color:#fff; 
-  border-radius:8px; 
-  cursor:pointer;
-}
-
-.btn:hover { opacity:0.9; }
-
-.muted { color:#6b7280; }
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="product.js"></script>
 </head>
 <body>
+    <header>
+        <h1>Product Detail</h1>
+        <a href="index.html">← Back to Shop</a>
+    </header>
 
-<div class="product-page">
-  <img id="pImg">
-  
-  <div class="product-info">
-    <h2 id="pName"></h2>
-    <div class="muted" id="pCategory"></div>
-    <div class="price" id="pPrice"></div>
-    <div id="pDiscount" class="muted"></div>
-    <p id="pDesc"></p>
-    <div class="muted" id="pStock"></div>
-    <button id="addBtn" class="btn">Add to cart</button>
-  </div>
-</div>
-
-
-<script>
-const KEY_PRODUCTS = 'products_v1';
-const KEY_CART = 'shop_cart';
-
-const load = (k,fallback=[]) => {
-  try {
-    const d = localStorage.getItem(k);
-    return d ? JSON.parse(d) : fallback;
-  } catch(e){ return fallback; }
-};
-const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
-
-const params = new URLSearchParams(window.location.search);
-const id = params.get('id');
-
-let products = load(KEY_PRODUCTS, []);
-let cart = load(KEY_CART, {});
-
-const p = products.find(x => x.id == id);
-
-if(!p){
-  document.body.innerHTML =
-    "<h2 style='text-align:center;margin-top:40px;'>Product not found</h2>";
-} 
-else {
-  document.getElementById('pImg').src = p.image;
-  document.getElementById('pName').textContent = p.name;
-  document.getElementById('pCategory').textContent = p.category;
-
-  document.getElementById('pPrice').textContent = "৳ " + p.price;
-  document.getElementById('pDiscount').textContent = p.discount ? (p.discount + "% OFF") : "";
-
-  document.getElementById('pDesc').textContent = p.desc || "No description.";
-  document.getElementById('pStock').textContent = "Stock: " + p.stock;
-
-  document.getElementById('addBtn').addEventListener('click', () => {
-    cart = load(KEY_CART, {});
-    cart[p.id] = (cart[p.id] || 0) + 1;
-    save(KEY_CART, cart);
-   
-  });
-}
-</script>
-
+    <main>
+        <div class="product-detail" id="product-detail">
+            <!-- Product info will load here -->
+        </div>
+    </main>
 </body>
 </html>
