@@ -1,371 +1,67 @@
+// Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-:root {
-  --primary:#6e7843;
-  --bg:#D9CFAB;
-  --card:#fff;
-  --muted:#000000;
+// Firebase config (same as main.js)
+const firebaseConfig = {
+  apiKey: "AIzaSyCDQy01MR2vRnYFZ0fE1zKvesusARWkmBg",
+  authDomain: "online-shop-2da5a.firebaseapp.com",
+  projectId: "online-shop-2da5a",
+  storageBucket: "online-shop-2da5a.firebasestorage.app",
+  messagingSenderId: "393993677310",
+  appId: "1:393993677310:web:c75874ec5c758a1f9938af",
+  measurementId: "G-DRNC3QVDSY"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Get product ID from URL
+const urlParams = new URLSearchParams(window.location.search);
+const productId = urlParams.get('id');
+
+const productDetail = document.getElementById('product-detail');
+
+// Fetch product data from Firestore
+async function loadProduct() {
+    if (!productId) return;
+
+    try {
+        const docRef = doc(db, "products", productId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const product = docSnap.data();
+
+            productDetail.innerHTML = `
+                <img src="${product.imageURL}" alt="${product.name}">
+                <h2>${product.name}</h2>
+                <p>$${product.price}</p>
+                <p>${product.description}</p>
+                <button id="add-to-cart">Add to Cart</button>
+            `;
+
+            // Add to cart functionality
+            document.getElementById('add-to-cart').addEventListener('click', () => {
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                cart.push({
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    imageURL: product.imageURL
+                });
+                localStorage.setItem('cart', JSON.stringify(cart));
+                alert('Product added to cart!');
+            });
+
+        } else {
+            productDetail.innerHTML = '<p>Product not found!</p>';
+        }
+
+    } catch (error) {
+        console.error("Error fetching product: ", error);
+    }
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: Inter, system-ui, Arial, sans-serif;
-  background: var(--bg);
-  color: #0f172a;
-}
-
-/* Header */
-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px 16px;
-  background: #8f8552;
-  box-shadow: 0 2px 6px rgba(2,6,23,0.06);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--primary), #6A5A23);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 800;
-}
-
-.search {
-  flex: 1;
-  display: flex;
-  gap: 6px;
-  min-width: 200px;
-}
-
-.search input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #e6eefc;
-}
-
-.search button {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 0;
-  background: var(--primary);
-  color: #fff;
-  cursor: pointer;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.btn {
-  background: var(--primary);
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 0;
-  cursor: pointer;
-  font-weight: 700;
-}
-/* Hero and product grid */
-.hero {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 18px;
-  padding: 20px;
-}
-
-.hero-card {
-  background: var(--card);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(2,6,23,0.04);
-}
-
-.hero h1 {
-  margin-bottom: 10px;
-  font-size: 28px;
-  color: var(--primary);
-}
-
-.categories {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.chip {
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: #f1f5f9;
-  cursor: pointer;
-}
-
-.chip.active {
-  background: linear-gradient(90deg, #eef2ff, #f8fafc);
-  color: var(--primary);
-  border: 1px solid rgba(37,99,235,0.12);
-}
-
-.grid {
-  padding: 18px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-}
-
-.card {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 6px 18px rgba(2,6,23,0.04);
-  display: flex;
-  flex-direction: column;
-}
-
-.card img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.card h4 {
-  margin: 10px 0 6px;
-  font-size: 16px;
-}
-
-.meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 700;
-}
-
-.muted { color: var(--muted); font-size: 13px; }
-.price { font-weight: 900; }
-
-.card .controls {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.small {
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 0;
-  cursor: pointer;
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  padding: 18px;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-/* Modal */
-.modal {
-  position: fixed;
-  right: 18px;
-  top: 70px;
-  width: 320px;
-  background: var(--card);
-  border-radius: 12px;
-  box-shadow: 0 18px 50px rgba(2,6,23,0.18);
-  z-index: 100;
-  padding: 12px;
-  display: none;
-}
-.modal.open { display: block; }
-
-.cart-item {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.cart-item img {
-  width: 64px;
-  height: 48px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-.cart-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 12px;
-}
-/* Bottom navigation */
-.bottom-nav {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background: #FFFFFF00;
-  padding: 10px;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-}
-.bottom-nav img {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-}
-.nav-cart {
-  position: relative;
-  display: inline-block;
-}
-
-.nav-cart .badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  font-size: 12px;
-  padding: 3px 6px;@media (max-width: 768px) {
-
-  /* Sidebar becomes hidden by default */
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -260px;
-    width: 250px;
-    height: 100vh;
-    background: #fff;
-    z-index: 1000;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-    transition: left 0.3s ease;
-  }
-
-  /* When active, slide in */
-  .sidebar.active {
-    left: 0;
-  }
-
-  /* Mobile Menu Button */
-  .mobile-toggle {
-    display: block;
-    background: var(--primary);
-    color: #fff;
-    padding: 12px 16px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1500;
-  }
-
-  /* Main content now FULL WIDTH */
-  .main {
-    margin-left: 0;
-    padding-top: 60px; /* space for mobile menu btn */
-    width: 100%;
-  }
-
-  /* Stack layout vertically */
-  .container {
-    grid-template-columns: 1fr;
-  }
-
-  /* Table responsive scroll */
-  .table-wrap {
-    overflow-x: auto;
-    width: 100%;
-  }
-
-  table {
-    min-width: 600px;
-  }
-}
-  border-radius: 999px;
-  background: #ef4444;
-  color: #fff;
-}
-
-#adminLink {
-  display: none;
-}
-/* Responsive */
-@media(max-width:1100px) {
-  .grid { grid-template-columns: repeat(3,1fr); }
-  .hero { grid-template-columns: 1fr; }
-}
-
-@media(max-width:800px) {
-  .grid { grid-template-columns: repeat(2,1fr); }
-}
-
-@media(max-width:520px) {
-  header { flex-direction: column;
-  justify-content:space-between;
-  align-items: stretch; }
-  .search { width: 100%; order: 3; }
-  .actions { order: 2; justify-content: space-between; width: 100%; }
-  .brand { order: 1; justify-content: flex-start; width: 100%; }
-  .grid { grid-template-columns: 1fr; }
-}
-
-/* products  */
-/* Product Detail Page */
-.product-detail {
-    max-width: 600px;
-    margin: 20px auto;
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    text-align: center;
-}
-
-.product-detail img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    border-radius: 5px;
-}
-
-.product-detail h2 {
-    margin: 15px 0 10px;
-}
-
-.product-detail p {
-    margin: 10px 0;
-    color: #555;
-}
-
-.product-detail button {
-    background-color: #28a745;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 15px;
-}
-
-.product-detail button:hover {
-    background-color: #218838;
-}
+loadProduct();
