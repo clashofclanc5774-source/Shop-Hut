@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — Shop</title>
+<style>
+body{
+  margin:0;display:flex;justify-content:center;align-items:center;
+  height:100vh;font-family:Arial;background:#f1f5f9;
+}
+.card{
+  background:white;padding:30px;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,0.1);
+  width:90%;max-width:350px;text-align:center;
+}
+input{
+  width:100%;padding:10px;margin:8px 0;border:1px solid #ddd;border-radius:8px;
+}
+button{
+  width:100%;padding:10px;background:#2563eb;color:white;border:0;border-radius:8px;
+  font-weight:700;cursor:pointer;margin-top:10px;
+}
+h2{color:#2563eb;margin-bottom:10px}
+.error{color:red;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Login</h2>
+  <input type="email" id="user" placeholder="Gmail" required>
+  <input type="password" id="pass" placeholder="Password" required>
+  <button onclick="login()">Login</button>
+  <div id="msg" class="error"></div>
+</div>
+
+<script>
+// -------- CHANGE ADMIN LOGIN HERE --------
+const ADMIN_EMAIL = "admin@gmail.com"; // admin gmail
+const ADMIN_PASS = "12345"; // admin password
+// -----------------------------------------
+
+function login(){
+  let email = document.querySelector("#user").value.trim();
+  let pass = document.querySelector("#pass").value.trim();
+
+  if(email === ADMIN_EMAIL && pass === ADMIN_PASS){
+    // Admin login
+    localStorage.setItem("adminAuth","true");
+    localStorage.setItem("adminName", email);
+    window.location.href = "admin.html";
+  } else if(email.endsWith("@gmail.com") && email !== ""){
+    // Regular user login
+    localStorage.setItem("userLoggedIn","1");
+    localStorage.setItem("userEmail", email);
+    window.location.href = "Index.html";
+  } else {
+    document.querySelector("#msg").innerText = "Invalid credentials!";
+  }
+}
+</script>
+
+</body>
+</html>
