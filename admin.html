@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin Dashboard — Products</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="brand"><div class="logo">ADM</div><div><strong>Admin</strong><div style="font-size:12px;color:var(--muted)">Dashboard</div></div></div>
+  <div class="menu-item active" onclick="goTo('products')">➕ Products Add</div>
+  <div class="menu-item" onclick="goTo('orders')">📝 Work Orders</div><div class="menu-item" onclick="goTo('stock')">📋 stock</div>
+  <div style="height:1px;background:#eef2f7;margin:12px 0;border-radius:8px"></div>
+  <div style="font-size:13px;color:var(--muted)">Logged in as <b style="color:var(--text)">Admin</b></div>
+  <div style="margin-top:10px">
+    <button style="margin-top:8px;width:100%;padding:10px;border-radius:8px;border:none;background:#f3f7ff;color:var(--primary);cursor:pointer" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="container">
+    <!-- LEFT: Add / Edit form -->
+    <div class="card">
+      <h3 id="formTitle">Add Product</h3>
+
+      <div class="form-row"><input id="pname" placeholder="Product Name *"></div>
+      <div class="form-row"><input id="price" type="number" placeholder="Price ($) *"></div>
+      <div class="form-row"><input id="discount" type="number" placeholder="Discount (%)"></div>
+      <div class="form-row"><input id="stockQty" type="number" placeholder="Stock Quantity *"></div>
+      <div class="form-row"><input id="category" placeholder="Category"></div>
+
+      <div class="form-row">
+        <label style="display:block;margin-bottom:6px">Image Source</label>
+        <select id="imgSource" onchange="toggleImageInput()">
+          <option value="url">URL</option>
+          <option value="file">Upload</option>
+        </select>
+      </div>
+
+      <div class="form-row"><input id="imgUrl" placeholder="https://example.com/image.jpg"></div>
+      <div class="form-row" style="display:none" id="imgFileRow"><input id="imgFile" type="file" accept="image/*"></div>
+
+      <div class="form-row"><textarea id="desc" rows="4" placeholder="Description"></textarea></div>
+      <div class="form-row"><input id="videoUrl" placeholder="Video URL"></div>
+
+      <div style="display:flex; gap:10px">
+        <button onclick="saveProduct()" style="flex:1;background:var(--primary);color:#fff">Save Product</button>
+        <button onclick="clearForm()" style="flex:1;background:#f3f7ff;color:var(--primary)">Clear</button>
+      </div>
+
+      <div style="margin-top:12px; font-size:13px; color:var(--muted)">* Required fields: Name, Price, Stock</div>
+    </div>
+    </div>
+    </div>
+
+
+<script>
+function onFilterChange(){
+  buildCategoryFilter();
+  renderProducts();
+}
+/* ====== Login protect ====== */
+if (!localStorage.getItem('adminAuth')) {
+  window.location.href = 'login.html';
+}
+
+/* ====== App State ====== */
+let editIndex = -1;
+const STORAGE_KEY = 'products_v1';
+
+/* ====== CRUD Helpers ====== */
+function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+function setProducts(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+/* ====== Form Helpers ====== */
+function toggleImageInput() {
+  const src = document.getElementById('imgSource').value;
+  document.getElementById('imgFileRow').style.display = src === 'file' ? 'block' : 'none';
+  document.getElementById('imgUrl').style.display = src === 'url' ? 'block' : 'none';
+}
+
+function clearForm() {
+  editIndex = -1;
+  document.getElementById('formTitle').innerText = 'Add Product';
+  ['pname','price','discount','stockQty','category','imgUrl','desc','videoUrl'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('imgSource').value = 'url';
+  toggleImageInput();
+  const f = document.getElementById('imgFile');
+  if(f) f.value = '';
+}
+
+/* ====== Save Product ====== */
+function saveProduct() {
+  const name = document.getElementById('pname').value.trim();
+  const price = document.getElementById('price').value.trim();
+  const discount = document.getElementById('discount').value.trim();
+  const stockQty = document.getElementById('stockQty').value.trim();
+  const category = document.getElementById('category').value.trim() || 'Uncategorized';
+  const desc = document.getElementById('desc').value.trim();
+  const videoUrl = document.getElementById('videoUrl').value.trim();
+
+  if(!name || !price || !stockQty){
+    alert('Please fill required fields: Name, Price, Stock');
+    return;
+  }
+
+  const product = {
+    name,
+    price: parseFloat(price),
+    discount: discount ? parseFloat(discount) : 0,
+    stock: parseInt(stockQty, 10),
+    category,
+    desc,
+    videoUrl,
+    id: editIndex >= 0 ? getProducts()[editIndex].id : Date.now(),
+    image: ''
+  };
+
+  const imgSource = document.getElementById('imgSource').value;
+  if(imgSource === 'url') {
+    product.image = document.getElementById('imgUrl').value.trim() || '';
+    saveToLocal(product);
+  } else {
+    const file = document.getElementById('imgFile').files[0];
+    if(file){
+      const reader = new FileReader();
+      reader.onload = () => {
+        product.image = reader.result;
+        saveToLocal(product);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      saveToLocal(product);
+    }
+  }
+}
+
+function saveToLocal(product) {
+  let products = getProducts();
+  if(editIndex >= 0){
+    products[editIndex] = { ...products[editIndex], ...product };
+    alert('Product updated successfully');
+  } else {
+    products.unshift(product);
+    alert('Product added successfully');
+  }
+  setProducts(products);
+  clearForm();
+  buildCategoryFilter();
+  renderProducts();
+}
+
+/* ====== Edit & Delete ====== */
+function startEdit(id){
+  const products = getProducts();
+  const idx = products.findIndex(p => p.id === id);
+  if(idx === -1){ alert('Product not found'); return; }
+  editIndex = idx;
+  const p = products[idx];
+  document.getElementById('formTitle').innerText = 'Edit Product';
+  document.getElementById('pname').value = p.name || '';
+  document.getElementById('price').value = p.price || '';
+  document.getElementById('discount').value = p.discount || '';
+  document.getElementById('stockQty').value = p.stock || '';
+  document.getElementById('category').value = p.category || '';
+  document.getElementById('imgSource').value = 'url';
+  document.getElementById('imgUrl').value = p.image || '';
+  document.getElementById('desc').value = p.desc || '';
+  document.getElementById('videoUrl').value = p.videoUrl || '';
+  document.getElementById('imgFile').value = '';
+  toggleImageInput();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function deleteProduct(id){
+  if(!confirm('Delete this product?')) return;
+  let products = getProducts();
+  products = products.filter(p => p.id !== id);
+  setProducts(products);
+  buildCategoryFilter();
+  renderProducts();
+}
+
+/* ====== Render Products ====== */
+function renderProducts() {
+  const all = getProducts();
+  const search = document.getElementById('searchInput') ? document.getElementById('searchInput').value.trim().toLowerCase() : '';
+  const category = document.getElementById('categoryFilter') ? document.getElementById('categoryFilter').value : 'all';
+  
+  const filtered = all.filter(p =>
+    (category === 'all' || p.category === category) &&
+    (!search || p.name.toLowerCase().includes(search) || (p.desc || '').toLowerCase().includes(search))
+  );
+  
+  const tbody = document.getElementById('productTable') || document.getElementById('stockTable');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="color:var(--muted)">No products found</td></tr>`;
+    return;
+  }
+  
+  filtered.forEach(p => {
+    const finalPrice = Number(p.price) * (1 - (p.discount || 0) / 100);
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><img class="product-image" src="${p.image || 'https://via.placeholder.com/120x90?text=No+Image'}"></td>
+      <td><strong>${escapeHtml(p.name)}</strong><div style="font-size:12px;color:var(--muted)">${escapeHtml(p.desc||'')}</div></td>
+      <td>${p.category || 'Uncategorized'}</td>
+      <td>${p.stock}</td>
+      <td>$${Number(p.price).toFixed(2)}</td>
+      <td>${p.discount || 0}%</td>
+      <td>$${finalPrice.toFixed(2)}</td>
+      <td class="row-actions">
+        <button class="page-btn" onclick="startEdit(${p.id})">Edit</button>
+        <button class="page-btn" onclick="deleteProduct(${p.id})">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  
+  const totalSpan = document.getElementById('totalCount');
+  if (totalSpan) totalSpan.textContent = filtered.length;
+}
+/* ====== Category Filter ====== */
+function buildCategoryFilter(){
+  const sel = document.getElementById('categoryFilter');
+  if(!sel) return;
+  const all = getProducts();
+  const cats = Array.from(new Set(all.map(p => p.category || 'Uncategorized')));
+  const cur = sel.value || 'all';
+  sel.innerHTML = '<option value="all">All categories</option>';
+  cats.forEach(c => sel.appendChild(new Option(c, c)));
+  if(Array.from(sel.options).some(o => o.value === cur)) sel.value = cur;
+}
+
+/* ====== Navigation ====== */
+function goTo(page, event){
+  document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+  if(event) event.target.classList.add('active');
+
+  const main = document.querySelector('.main');
+  if(page === 'products'){
+    main.innerHTML = `
+      <div class="header">
+  <div class="container">
+    <!-- LEFT: Add / Edit form -->
+    <div class="card">
+      <h3 id="formTitle">Add Product</h3>
+
+      <div class="form-row"><input id="pname" placeholder="Product Name *"></div>
+      <div class="form-row"><input id="price" type="number" placeholder="Price ($) *"></div>
+      <div class="form-row"><input id="discount" type="number" placeholder="Discount (%)"></div>
+      <div class="form-row"><input id="stockQty" type="number" placeholder="Stock Quantity *"></div>
+      <div class="form-row"><input id="category" placeholder="Category"></div>
+
+      <div class="form-row">
+        <label style="display:block;margin-bottom:6px">Image Source</label>
+        <select id="imgSource" onchange="toggleImageInput()">
+          <option value="url">URL</option>
+          <option value="file">Upload</option>
+        </select>
+      </div>
+
+      <div class="form-row"><input id="imgUrl" placeholder="https://example.com/image.jpg"></div>
+      <div class="form-row" style="display:none" id="imgFileRow"><input id="imgFile" type="file" accept="image/*"></div>
+
+      <div class="form-row"><textarea id="desc" rows="4" placeholder="Description"></textarea></div>
+      <div class="form-row"><input id="videoUrl" placeholder="Video URL"></div>
+
+      <div style="display:flex; gap:10px">
+        <button onclick="saveProduct()" style="flex:1;background:var(--primary);color:#fff">Save Product</button>
+        <button onclick="clearForm()" style="flex:1;background:#f3f7ff;color:var(--primary)">Clear</button>
+      </div>
+
+      <div style="margin-top:12px; font-size:13px; color:var(--muted)">* Required fields: Name, Price, Stock</div>
+    </div>
+    </div>
+    </div>
+`;
+  } else if(page === 'orders'){
+    main.innerHTML = `
+      <div class="header"><h1>Orders Management</h1></div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="ordersTable"></tbody>
+        </table>
+      </div>`;
+      renderOrders();
+      
+  } 
+  else if(page === 'stock'){
+    main.innerHTML = `
+      <div class="header"><h1>Stock Management</h1>
+<div class="controls">
+  <input id="searchInput" placeholder="Search products..." oninput="onFilterChange()" />
+      </div>
+      <select id="categoryFilter" onchange="onFilterChange()">
+        <option value="all">All categories</option>
+        </select>
+        </div>
+      <div class="table-wrap">
+        <table>
+          <tr>
+  <th>Image</th>
+  <th>Name & Description</th>
+  <th>Category</th>
+  <th>Stock</th>
+  <th>Price</th>
+  <th>Discount</th>
+  <th>Final Price</th>
+  <th>Actions</th>
+</tr>
+          <tbody id="stockTable"></tbody>
+        </table>
+      </div>`;
+    buildCategoryFilter();
+    renderProducts();
+    
+  }
+}
+
+/* ====== Logout ====== */
+function logout(){
+  localStorage.removeItem('adminToken');
+  window.location.href = 'login.html';
+}
+
+/* ====== Utilities ====== */
+function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* ====== Sidebar toggle ====== */
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('active'); }
+
+/* ====== Init ====== */
+(function init(){
+  toggleImageInput();
+  buildCategoryFilter();
+  renderProducts();
+})();
+function onFilterChange(){
+  renderProducts();
+}
+/* ====== ORDER MANAGEMENT ====== */
+
+function getOrders() {
+  return JSON.parse(localStorage.getItem("orders_v1") || "[]");
+}
+function setOrders(arr) {
+  localStorage.setItem("orders_v1", JSON.stringify(arr));
+}
+function renderOrders() {
+  const table = document.getElementById("ordersTable");
+  if (!table) return;
+
+  const orders = getOrders();
+  table.innerHTML = "";
+
+  if (orders.length === 0) {
+    table.innerHTML = `<tr><td colspan="6" style="color:var(--muted)">No orders yet</td></tr>`;
+    return;
+  }
+
+  orders.forEach(order => {
+    let productsHtml = "";
+    order.items.forEach(p => {
+      productsHtml += `
+        <div>
+          ${p.name} × ${p.qty}  
+          <span style="color:var(--muted);font-size:12px">($${p.price})</span>
+        </div>`;
+    });
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>#${order.id}</td>
+      <td>${order.name}<br><span style="font-size:12px;color:var(--muted)">${order.phone}</span></td>
+      <td>${productsHtml}</td>
+      <td>$${order.total}</td>
+      <td>${order.status}</td>
+      <td>
+        <button onclick="updateOrderStatus('${order.id}', 'Done')" class="page-btn">Done</button>
+        <button onclick="deleteOrder('${order.id}')" class="page-btn">Delete</button>
+      </td>
+    `;
+    table.appendChild(tr);
+  });
+}
+function updateOrderStatus(id, status) {
+  const orders = getOrders();
+  const idx = orders.findIndex(o => o.id == id);
+  if (idx === -1) return;
+
+  orders[idx].status = status;
+  setOrders(orders);
+  renderOrders();
+}
+function deleteOrder(id) {
+  if (!confirm("Delete this order?")) return;
+  let orders = getOrders();
+  orders = orders.filter(o => o.id != id);
+  setOrders(orders);
+  renderOrders();
+}
+
+
+</script>
+</body>
+</html>
