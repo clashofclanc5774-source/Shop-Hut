@@ -1,16 +1,26 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-    <title>Your Cart</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cart</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h2>Shopping Cart</h2></header>
+  <header class="appbar">
+    <a href="index.html" style="color:#fff;text-decoration:none">‹ Back</a>
+    <h1 style="flex:1;text-align:center">Cart</h1>
+  </header>
 
-<div class="container" id="cart-items"></div>
+  <div class="container">
+    <div id="cartItems"></div>
+    <div id="cartSummary" class="card center" style="display:none">
+      <div id="totalText"></div>
+      <a id="checkoutBtn" class="btn" href="checkout.html">Proceed to Checkout</a>
+    </div>
+    <div class="footer-note">Items are saved locally on your phone until checkout.</div>
+  </div>
 
-<a href="checkout.html" class="btn">Checkout</a>
-
-<script type="module" src="main.js"></script>
+  <script type="module" src="main.js"></script>
 </body>
 </html>
