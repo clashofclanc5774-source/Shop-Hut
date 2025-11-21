@@ -1,14 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-    <title>Online Shop</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Online Shop</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h2>Online Shop</h2></header>
+  <header class="appbar">
+    <img src="https://via.placeholder.com/80x28?text=Shop" class="logo" alt="logo">
+    <h1>My Mobile Shop</h1>
+  </header>
 
-<div class="container" id="product-list">Loading...</div>
+  <div class="container">
+    <div class="search">
+      <input id="searchInput" class="input" placeholder="Search products...">
+    </div>
 
-<script type="module" src="main.js"></script>
+    <div id="productList" class="product-grid"></div>
+
+    <div class="center footer-note">Built for mobile · Host on GitHub Pages</div>
+  </div>
+
+  <a id="cartFab" class="cart-fab" href="cart.html">Cart (<span id="cartCount">0</span>)</a>
+
+  <script type="module" src="main.js"></script>
 </body>
 </html>
