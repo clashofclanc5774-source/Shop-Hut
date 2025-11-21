@@ -1,19 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-    <title>Product View</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Product</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h2>Product Details</h2></header>
+  <header class="appbar">
+    <a href="index.html" style="color:#fff;text-decoration:none">‹ Back</a>
+    <h1 style="flex:1;text-align:center">Product</h1>
+  </header>
 
-<div class="container">
-    <img id="p-img" />
-    <h2 id="p-name"></h2>
-    <h3 id="p-price"></h3>
-    <button id="buy-btn" class="btn">Add to Cart</button>
-</div>
+  <div class="container">
+    <div id="productArea" class="card product-page">Loading...</div>
+  </div>
 
-<script type="module" src="main.js"></script>
+  <script type="module" src="main.js"></script>
 </body>
 </html>
