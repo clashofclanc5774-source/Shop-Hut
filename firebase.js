@@ -1,17 +1,11 @@
 // firebase.js
+// Replace nothing — using your provided config
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-import { 
-    getFirestore, collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import {
-    getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-    getStorage, ref, uploadBytes, getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getFirestore, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-// Your Firebase Configuration (YOUR OWN CONFIG)
 const firebaseConfig = {
   apiKey: "AIzaSyCDQy01MR2vRnYFZ0fE1zKvesusARWkmBg",
   authDomain: "online-shop-2da5a.firebaseapp.com",
@@ -22,17 +16,12 @@ const firebaseConfig = {
   measurementId: "G-DRNC3QVDSY"
 };
 
-// Initialize App
 export const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
-
-// Firestore
 export const db = getFirestore(app);
-export const productCollection = collection(db, "products");
-export const orderCollection = collection(db, "orders");
-
-// Auth
 export const auth = getAuth(app);
-
-// Storage
 export const storage = getStorage(app);
+
+// Collection refs
+export const productsRefName = "products";
+export const ordersRefName = "orders";
