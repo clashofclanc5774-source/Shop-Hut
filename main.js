@@ -177,3 +177,34 @@ if (placeOrderBtn) {
   updateCartCount();
   renderCartPage();
 })();
+import { db, productCollection } from "./firebase.js";
+import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Load Products
+async function loadProducts() {
+    const list = document.getElementById("productList");
+    list.innerHTML = "Loading...";
+
+    const querySnapshot = await getDocs(productCollection);
+
+    list.innerHTML = ""; // Clear loading text
+
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+
+        let item = `
+        <div style="width:150px; border:1px solid #ddd; padding:10px;">
+            <img src="${data.image}" width="100%" />
+            <h4>${data.name}</h4>
+            <p>Price: ${data.price}৳</p>
+            <button onclick="addToCart('${doc.id}', '${data.name}', ${data.price}, '${data.image}')">
+                Add to Cart
+            </button>
+        </div>
+        `;
+
+        list.innerHTML += item;
+    });
+}
+
+loadProducts();
