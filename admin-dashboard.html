@@ -1,1 +1,25 @@
-g
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="appbar">
+    <h1>Admin</h1>
+    <a id="logoutBtn" style="color:#fff;text-decoration:none">Logout</a>
+  </header>
+
+  <div class="container">
+    <div class="admin-grid">
+      <a class="card" href="admin-products.html">Manage Products</a>
+      <a class="card" href="admin-orders.html">View Orders</a>
+    </div>
+    <div style="margin-top:12px" class="small">Only signed-in admins can access product & order pages.</div>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
