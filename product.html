@@ -1,22 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Detail</title>
+    <title>Product View</title>
     <link rel="stylesheet" href="style.css">
-    <script type="module" src="product.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Product Detail</h1>
-        <a href="index.html">← Back to Shop</a>
-    </header>
+<header><h2>Product Details</h2></header>
 
-    <main>
-        <div class="product-detail" id="product-detail">
-            <!-- Product info will load here -->
-        </div>
-    </main>
+<div class="container">
+    <img id="p-img" />
+    <h2 id="p-name"></h2>
+    <h3 id="p-price"></h3>
+    <button id="buy-btn" class="btn">Add to Cart</button>
+</div>
+
+<script type="module" src="main.js"></script>
 </body>
 </html>
