@@ -190,3 +190,43 @@ if (location.pathname.includes("admin-orders.html")) {
     loadOrders();
   });
 }
+import { db, storage, productCollection } from "./firebase.js";
+import {
+    addDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+    ref, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+// ADD PRODUCT
+document.getElementById("productForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    let name = document.getElementById("productName").value;
+    let price = document.getElementById("productPrice").value;
+    let file = document.getElementById("productImage").files[0];
+
+    if (!file) {
+        alert("Please select an image!");
+        return;
+    }
+
+    // Upload image to Firebase Storage
+    const imageRef = ref(storage, "product-images/" + file.name);
+
+    await uploadBytes(imageRef, file);
+
+    let imageURL = await getDownloadURL(imageRef);
+
+    // Save product to Firestore
+    await addDoc(productCollection, {
+        name: name,
+        price: Number(price),
+        image: imageURL,
+        createdAt: Date.now()
+    });
+
+    alert("Product Added Successfully!");
+    document.getElementById("productForm").reset();
+});
