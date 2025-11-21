@@ -1,1 +1,30 @@
-h
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Products</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="appbar">
+    <a href="admin-dashboard.html" style="color:#fff;text-decoration:none">‹ Back</a>
+    <h1 style="flex:1;text-align:center">Products</h1>
+    <a id="logoutBtnTop" style="color:#fff;text-decoration:none">Logout</a>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <input id="pName" class="input" placeholder="Product name" />
+      <input id="pPrice" class="input" placeholder="Price (TK)" />
+      <textarea id="pDesc" class="input" placeholder="Short description" rows="2"></textarea>
+      <input id="pImage" type="file" accept="image/*" class="input" />
+      <button id="addProductBtn" class="btn">Add Product</button>
+    </div>
+
+    <div id="productsList"></div>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
