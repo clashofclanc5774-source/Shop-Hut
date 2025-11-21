@@ -114,3 +114,39 @@ footer {
 .product-detail button:hover {
     background-color: #218838;
 }
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.cart-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+}
+
+.cart-info {
+    flex: 1;
+    padding-left: 10px;
+}
+
+.remove-btn {
+    padding: 8px 15px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.cart-summary {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f2f2f2;
+    border-radius: 10px;
+}
