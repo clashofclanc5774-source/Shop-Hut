@@ -1,19 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-    <title>Checkout</title>
-    <link rel="stylesheet" href="style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Checkout</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h2>Checkout</h2></header>
+  <header class="appbar">
+    <a href="cart.html" style="color:#fff;text-decoration:none">‹ Back</a>
+    <h1 style="flex:1;text-align:center">Checkout</h1>
+  </header>
 
-<div class="container">
-    <input id="name" placeholder="Your Name"><br><br>
-    <input id="phone" placeholder="Phone Number"><br><br>
-    <textarea id="address" placeholder="Address"></textarea><br><br>
-    <button onclick="placeOrder()" class="btn">Place Order</button>
-</div>
+  <div class="container">
+    <div class="card">
+      <input id="cName" class="input" placeholder="Full name" />
+      <input id="cPhone" class="input" placeholder="Phone number" />
+      <textarea id="cAddress" class="input" placeholder="Delivery address" rows="4"></textarea>
+      <button id="placeOrderBtn" class="btn">Place Order</button>
+    </div>
+    <div id="checkoutNote" class="small" style="margin-top:12px"></div>
+  </div>
 
-<script type="module" src="main.js"></script>
+  <script type="module" src="main.js"></script>
 </body>
 </html>
