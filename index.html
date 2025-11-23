@@ -1,31 +1,62 @@
-<!doctype html>
-<html>
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Online Shop</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home</title>
+  <style>
+    body {font-family: Arial; padding:10px; margin-bottom:70px;}
+    .card {border:1px solid #ddd; border-radius:10px; padding:10px; margin:10px 0; display:flex; gap:10px; align-items:center;}
+    img {width:100px; height:100px; border-radius:8px; object-fit:cover;}
+    .bottom-nav {position:fixed; bottom:0; left:0; right:0; display:flex; justify-content:space-around; background:#fff; border-top:1px solid #ccc; padding:10px;}
+  </style>  <!-- Firebase SDK -->  <!-- Use Firebase v8 for SPCK compatibility --><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MSG_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function loadProducts() {
+      const list = document.getElementById('productList');
+      list.innerHTML = "Loading products...";
+
+      db.collection("Products").get().then(snapshot => {
+        list.innerHTML = "";
+
+        snapshot.forEach(doc => {
+          const p = doc.data();
+          const card = `
+            <div class="card">
+              <img src="${p.image}" alt="${p.Name}">
+              <div>
+                <h3>${p.Name}</h3>
+                <p>₹${p.Price}</p>
+                <p>⭐ ${p.Rating}</p>
+              </div>
+            </div>
+          `;
+          list.innerHTML += card;
+        });
+      }).catch(err => {
+        list.innerHTML = "Failed to load products.";
+        console.error(err);
+      });
+    }
+
+    window.onload = loadProducts;
+  </script></head>
 <body>
-  <header class="appbar">
-    <img src="https://via.placeholder.com/80x28?text=Shop" class="logo" alt="logo">
-    <h1>My Mobile Shop</h1>
-  </header>
-<h2>Our Products</h2>
-<div id="productList" style="display:flex; flex-wrap:wrap; gap:20px;"></div>
-  <div class="container">
-    <div class="search">
-      <input id="searchInput" class="input" placeholder="Search products...">
-    </div>
-
-    <div id="productList" class="product-grid"></div>
-
-    <div class="center footer-note">Built for mobile · Host on GitHub Pages</div>
+  <h2>Home</h2>  <div id="productList"></div>  <div class="bottom-nav">
+    <button onclick="location.href='home.html'">Home</button>
+    <button onclick="location.href='search.html'">Search</button>
+    <button onclick="location.href='favorite.html'">Favorite</button>
+    <button onclick="location.href='cart.html'">Cart</button>
+    <button onclick="location.href='profile.html'">Profile</button>
   </div>
-
-  <a id="cartFab" class="cart-fab" href="cart.html">Cart (<span id="cartCount">0</span>)</a>
-
- <script type="module" src="firebase.js"></script>
-<script type="module" src="main.js"></script>
 </body>
 </html>
