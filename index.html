@@ -1,241 +1,107 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MarketPro — Growth Marketing Agency</title>
-  <meta name="description" content="MarketPro: Digital marketing, SEO, Social Ads, Content & Growth." />
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="images/favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Shop</title>
+  <style>
+    body { font-family: Arial; margin: 0; background: #f7f7f7; }
+    .nav { display:flex; justify-content:space-between; padding:15px; background:white; }
+    .products { display:flex; flex-wrap:wrap; gap:18px; padding:20px; }
+    .card {
+      width: 180px; background:white; padding:10px;
+      border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    .card img { width:100%; height:150px; object-fit:cover; border-radius:8px; }
+    .filter { margin:20px; }
+    button { padding:10px 20px; }
+  </style>
 </head>
 <body>
 
-  <!-- WhatsApp quick button -->
-  <a id="whatsapp-btn" href="https://wa.me/REPLACE_WITH_PHONE_NUMBER?text=Hello%20MarketPro!%20I%27m%20interested" target="_blank" aria-label="Chat on WhatsApp">
-    <img src="images/whatsapp.svg" alt="WhatsApp">
-  </a>
+  <!-- NAVIGATION -->
+  <div class="nav">
+      <h3>Online Shop</h3>
+      <button id="logoutBtn">Logout</button>
+  </div>
 
-  <!-- NAV -->
-  <header class="site-header">
-    <nav class="nav container">
-      <div class="brand">
-        <img src="images/logo.png" alt="MarketPro Logo" class="logo">
-        <span class="brand-name">MarketPro</span>
-      </div>
+  <!-- FILTER -->
+  <div class="filter">
+      <label>Category: </label>
+      <select id="categoryFilter">
+          <option value="All">All</option>
+          <option value="Mobile">Mobile</option>
+          <option value="Headphone">Headphone</option>
+      </select>
+  </div>
 
-      <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#pricing">Pricing</a></li>
-        <li><a href="#testimonials">Testimonials</a></li>
-        <li><a href="#blog">Blog</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
+  <!-- PRODUCT LIST -->
+  <div class="products" id="productList"></div>
 
-      <a class="cta" href="#contact">Get Started</a>
-      <button class="hamburger" aria-label="menu" onclick="toggleMobileNav()">☰</button>
-    </nav>
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
-    <section id="home" class="hero container">
-      <div class="hero-left">
-        <h1 class="headline">Scale faster with ROI-driven digital marketing.</h1>
-        <p class="sub">Paid ads, SEO, content and funnel optimization — a single agency focused on measurable growth.</p>
-        <div class="hero-ctas">
-          <a class="btn btn-primary" href="#contact">Book a Free Call</a>
-          <a class="btn btn-ghost" href="#pricing">See Pricing</a>
-        </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBy6uthV_blqiFkzfzSZXNKIklwLZ3jOm8",
+      authDomain: "onlineshop-9dbb4.firebaseapp.com",
+      projectId: "onlineshop-9dbb4",
+      storageBucket: "onlineshop-9dbb4.firebasestorage.app",
+      messagingSenderId: "154399222996",
+      appId: "1:154399222996:web:b5f9dc8e31dc0cc9295f41",
+      measurementId: "G-970KJZ7G4F"
+    };
 
-        <div class="trust">
-          <span>Trusted by</span>
-          <div class="clients">
-            <img src="images/client1.png" alt="client">
-            <img src="images/client2.png" alt="client">
-            <img src="images/client3.png" alt="client">
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const list = document.getElementById("productList");
+    const filter = document.getElementById("categoryFilter");
+
+    // Fetch & Show Products
+    async function loadProducts(category = "All") {
+      list.innerHTML = "Loading...";
+
+      const querySnapshot = await getDocs(collection(db, "Products"));
+
+      list.innerHTML = ""; // clear old
+
+      querySnapshot.forEach(doc => {
+        const p = doc.data();
+
+        // Filter by category
+        if (category !== "All" && p.Category !== category) return;
+
+        list.innerHTML += `
+          <div class="card">
+            <img src="${p.image}" alt="${p.Name}">
+            <h4>${p.Name}</h4>
+            <p><b>Price:</b> ${p.Price}৳</p>
+            <p><b>Rating:</b> ⭐ ${p.Rating}</p>
           </div>
-        </div>
-      </div>
+        `;
+      });
+    }
 
-      <div class="hero-right">
-        <div class="device card-animate">
-          <img src="images/mockup.png" alt="app mockup">
-        </div>
-      </div>
-    </section>
-  </header>
+    // Filter handler
+    filter.addEventListener("change", () => {
+      loadProducts(filter.value);
+    });
 
-  <!-- SERVICES -->
-  <section id="services" class="section container">
-    <h2 class="section-title">Services</h2>
-    <p class="section-sub">Full-funnel growth services tailored to your business.</p>
+    // Logout
+    document.getElementById("logoutBtn").onclick = () => {
+      signOut(auth).then(() => {
+        alert("Logged out!");
+        window.location = "login.html";
+      });
+    };
 
-    <div class="grid services-grid">
-      <article class="service">
-        <h3>SEO & Content</h3>
-        <p>Technical SEO, on-page content, and topical authority to drive long-term organic traffic.</p>
-      </article>
+    // Load all products on page start
+    loadProducts();
+  </script>
 
-      <article class="service">
-        <h3>Paid Ads (Google / Meta / TikTok)</h3>
-        <p>Data-driven ad campaigns with creative testing and conversion optimization.</p>
-      </article>
-
-      <article class="service">
-        <h3>Social & Community</h3>
-        <p>Organic social strategy, content creation, and community engagement to build brand loyalty.</p>
-      </article>
-
-      <article class="service">
-        <h3>Conversion Rate Optimization</h3>
-        <p>A/B tests, funnel analytics, and landing page design to lower CPA and increase LTV.</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- PRICING -->
-  <section id="pricing" class="section container">
-    <h2 class="section-title">Pricing</h2>
-    <p class="section-sub">Simple pricing tiers so you know what to expect.</p>
-
-    <div class="grid pricing-grid">
-      <div class="price-card popular card-animate">
-        <div class="price-header">
-          <h3>Growth</h3>
-          <p class="muted">Small businesses & startups</p>
-        </div>
-        <div class="price">$799<span>/mo</span></div>
-        <ul class="price-list">
-          <li>Basic SEO (10 keywords)</li>
-          <li>1 ad funnel + creative</li>
-          <li>Monthly reporting</li>
-        </ul>
-        <a href="#contact" class="btn btn-primary">Choose Growth</a>
-      </div>
-
-      <div class="price-card card-animate">
-        <div class="price-header">
-          <h3>Scale</h3>
-          <p class="muted">Growing businesses</p>
-        </div>
-        <div class="price">$1,499<span>/mo</span></div>
-        <ul class="price-list">
-          <li>Advanced SEO (30 keywords)</li>
-          <li>3 ad funnels + creatives</li>
-          <li>Bi-weekly reporting</li>
-        </ul>
-        <a href="#contact" class="btn btn-primary">Choose Scale</a>
-      </div>
-
-      <div class="price-card card-animate">
-        <div class="price-header">
-          <h3>Enterprise</h3>
-          <p class="muted">Custom solutions</p>
-        </div>
-        <div class="price">Custom</div>
-        <ul class="price-list">
-          <li>Full team + dedicated manager</li>
-          <li>Enterprise integrations</li>
-          <li>Weekly calls & SLA</li>
-        </ul>
-        <a href="#contact" class="btn btn-primary">Get Quote</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- TESTIMONIALS -->
-  <section id="testimonials" class="section container">
-    <h2 class="section-title">What clients say</h2>
-    <div class="testimonials">
-      <button class="arrow left" onclick="moveTestimonial(-1)">‹</button>
-      <div class="test-track" id="testTrack">
-        <blockquote class="testimonial">
-          <p>"MarketPro doubled our MRR in 6 months. Strong strategy and consistent execution."</p>
-          <cite>— Aisha Khaled, CEO, BrightShop</cite>
-        </blockquote>
-
-        <blockquote class="testimonial">
-          <p>"The ads team is fast and creative — CPA dropped by 38% in the first month."</p>
-          <cite>— Omar Rahman, Head of Growth, Foodify</cite>
-        </blockquote>
-
-        <blockquote class="testimonial">
-          <p>"Excellent communication and transparent reporting. Highly recommended."</p>
-          <cite>— Lina Gomez, Founder, FitLife</cite>
-        </blockquote>
-      </div>
-      <button class="arrow right" onclick="moveTestimonial(1)">›</button>
-    </div>
-  </section>
-
-  <!-- BLOG -->
-  <section id="blog" class="section container">
-    <h2 class="section-title">Latest from our blog</h2>
-    <p class="section-sub">Insights, case studies and marketing tips.</p>
-
-    <div id="posts" class="grid posts-grid">
-      <!-- Posts injected by script.js -->
-    </div>
-
-    <div class="center">
-      <a class="btn btn-ghost" href="blog.html">View All Posts</a>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="section container contact-section">
-    <div class="contact-grid">
-      <div class="contact-card card-animate">
-        <h3>Book a free strategy call</h3>
-        <p>We'll review your current funnel and share immediate wins.</p>
-
-        <form id="contactForm">
-          <input type="text" name="name" placeholder="Full name" required>
-          <input type="email" name="email" placeholder="Email address" required>
-          <input type="text" name="company" placeholder="Company (optional)">
-          <textarea name="message" placeholder="Tell us about your needs" rows="5" required></textarea>
-          <button type="submit" class="btn btn-primary">Send Message</button>
-          <p id="formStatus" class="muted small"></p>
-        </form>
-      </div>
-
-      <div class="info-card">
-        <h4>Contact info</h4>
-        <p><strong>Email:</strong> hello@marketpro.example</p>
-        <p><strong>Phone:</strong> +1 (555) 123-4567</p>
-        <p><strong>Location:</strong> Remote • Worldwide</p>
-
-        <div class="brand-box">
-          <img src="images/logo.png" alt="logo" class="brand-logo">
-          <div>
-            <h3 class="brand-title">MarketPro</h3>
-            <p class="small muted">Growth Marketing • Creative • Data</p>
-          </div>
-        </div>
-
-        <div class="socials">
-          <a href="#" target="_blank">LinkedIn</a> · <a href="#" target="_blank">Twitter</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div>
-        <img src="images/logo-white.png" alt="logo" class="logo-sm">
-        <p class="muted small">© <span id="year"></span> MarketPro. All rights reserved.</p>
-      </div>
-
-      <nav>
-        <a href="#services">Services</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#contact">Contact</a>
-      </nav>
-
-      <div class="small muted">Built with ❤️ for growth</div>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
 </body>
 </html>
