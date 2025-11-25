@@ -1,174 +1,72 @@
-<!doctype html>
-<html lang="es-MX">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BeautyMX — Salud y Belleza Natural</title>
-  <meta name="description" content="BeautyMX: reseñas y ofertas de productos de salud y belleza natural para México. Encuentra las mejores recomendaciones y descuentos.">
-  <meta name="author" content="BeautyMX">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketing Agency</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="favicon.png" />
-  <!-- Open Graph -->
-  <meta property="og:site_name" content="BeautyMX">
-  <meta property="og:title" content="BeautyMX — Salud y Belleza Natural">
-  <meta property="og:description" content="Reseñas y ofertas de productos de salud y belleza natural para México.">
-  <meta property="og:type" content="website">
-  <!-- Structured data for product landing (JSON-LD) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "BeautyMX",
-    "url": "https://USERNAME.github.io/REPO/" 
-  }
-  </script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap header-inner">
-      <a class="logo" href="#">BeautyMX</a>
-      <nav class="main-nav">
-        <a href="#destacados">Destacados</a>
-        <a href="#categorias">Categorías</a>
-        <a href="#como-comprar">Cómo comprar</a>
-        <a href="#contacto">Contacto</a>
-      </nav>
-      <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú">☰</button>
+
+  <header>
+    <nav>
+      <h2 class="logo">MarketPro</h2>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="hero" id="home">
+      <h1>Grow Your Business With Digital Marketing</h1>
+      <p>We help brands increase sales with smart marketing strategies.</p>
+      <a href="#contact" class="btn">Get Started</a>
     </div>
   </header>
 
-  <main>
-    <!-- Hero -->
-    <section class="hero">
-      <div class="wrap hero-inner">
-        <div class="hero-text">
-          <h1>Belleza natural para México</h1>
-          <p>Encuentra los mejores productos de salud y belleza natural — reseñas honestas y ofertas exclusivas para México.</p>
-          <div class="cta-row">
-            <a class="btn primary" href="#destacados">Ver ofertas</a>
-            <a class="btn outline" href="#como-comprar">Cómo comprar</a>
-          </div>
-        </div>
-        <div class="hero-image">
-          <img src="images/hero-plant.jpg" alt="Belleza natural">
-        </div>
+  <section id="services" class="services">
+    <h2>Our Services</h2>
+    <div class="service-box">
+      <div class="card">
+        <h3>Social Media Marketing</h3>
+        <p>Grow your reach on Facebook, Instagram & TikTok.</p>
       </div>
-    </section>
-
-    <!-- Featured products -->
-    <section id="destacados" class="section wrap">
-      <h2 class="section-title">Productos destacados</h2>
-      <p class="section-sub">Ofertas seleccionadas y reseñas rápidas — enlaces de afiliado disponibles.</p>
-
-      <div class="grid products-grid" id="products-grid">
-        <!-- Product cards (JS may inject more if needed) -->
-        <article class="product-card" data-id="p1" itemscope itemtype="https://schema.org/Product">
-          <img class="product-thumb" src="images/product1.jpg" alt="Aceite natural de rosa mosqueta">
-          <div class="product-body">
-            <h3 itemprop="name">Aceite de Rosa Mosqueta</h3>
-            <p class="price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span itemprop="priceCurrency">MXN</span>
-              <span itemprop="price">299</span>
-              <span class="price-note"> / frasco</span>
-            </p>
-            <p class="product-desc">Hidratación profunda y reparación de la piel. Ideal para cicatrices y manchas.</p>
-            <div class="product-actions">
-              <a class="btn buy" href="#" rel="nofollow noopener" target="_blank" data-affiliate>Comprar ahora</a>
-              <button class="btn info" data-open-review="p1">Ver reseña</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-card" data-id="p2" itemscope itemtype="https://schema.org/Product">
-          <img class="product-thumb" src="images/product2.jpg" alt="Suplemento colágeno hidrolizado">
-          <div class="product-body">
-            <h3 itemprop="name">Colágeno Hidrolizado</h3>
-            <p class="price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span itemprop="priceCurrency">MXN</span>
-              <span itemprop="price">449</span>
-            </p>
-            <p class="product-desc">Suplemento para piel, uñas y articulaciones. Fórmula natural y fácil de mezclar.</p>
-            <div class="product-actions">
-              <a class="btn buy" href="#" rel="nofollow noopener" target="_blank" data-affiliate>Comprar ahora</a>
-              <button class="btn info" data-open-review="p2">Ver reseña</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-card" data-id="p3" itemscope itemtype="https://schema.org/Product">
-          <img class="product-thumb" src="images/product3.jpg" alt="Crema natural anti-edad">
-          <div class="product-body">
-            <h3 itemprop="name">Crema Anti-edad Natural</h3>
-            <p class="price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span itemprop="priceCurrency">MXN</span>
-              <span itemprop="price">379</span>
-            </p>
-            <p class="product-desc">Extractos botánicos para mejorar la firmeza y luminosidad de la piel.</p>
-            <div class="product-actions">
-              <a class="btn buy" href="#" rel="nofollow noopener" target="_blank" data-affiliate>Comprar ahora</a>
-              <button class="btn info" data-open-review="p3">Ver reseña</button>
-            </div>
-          </div>
-        </article>
+      <div class="card">
+        <h3>SEO Optimization</h3>
+        <p>Rank your website on Google and gain organic traffic.</p>
       </div>
-    </section>
-
-    <!-- Categories -->
-    <section id="categorias" class="section alt-bg">
-      <div class="wrap">
-        <h2 class="section-title">Categorías populares</h2>
-        <div class="categories">
-          <a class="cat" href="#">Cuidado facial</a>
-          <a class="cat" href="#">Suplementos</a>
-          <a class="cat" href="#">Cabello</a>
-          <a class="cat" href="#">Belleza natural</a>
-          <a class="cat" href="#">Promociones</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- How to buy -->
-    <section id="como-comprar" class="section">
-      <div class="wrap">
-        <h2 class="section-title">Cómo comprar con BeautyMX</h2>
-        <ol class="steps">
-          <li><strong>Revisa la reseña:</strong> lee los beneficios y recomendaciones.</li>
-          <li><strong>Haz click en Comprar:</strong> el botón te llevará al vendedor (Amazon / tienda local).</li>
-          <li><strong>Compra segura:</strong> paga con tu método preferido; nosotros recibimos una pequeña comisión.</li>
-        </ol>
-        <p class="note">Consejo: revisa siempre disponibilidad y envíos para México.</p>
-      </div>
-    </section>
-
-    <!-- Reviews modal area (hidden) -->
-    <div id="review-modal" class="modal" aria-hidden="true">
-      <div class="modal-content">
-        <button class="modal-close" aria-label="Cerrar">✕</button>
-        <div id="review-body"></div>
+      <div class="card">
+        <h3>Paid Ads Campaign</h3>
+        <p>Boost your business with targeted ad campaigns.</p>
       </div>
     </div>
+  </section>
 
-    <!-- Contact / Footer CTA -->
-    <section id="contacto" class="section footer-cta alt-bg">
-      <div class="wrap">
-        <h3>¿Quieres recomendaciones personalizadas?</h3>
-        <p>Déjanos tu correo y te enviaremos ofertas exclusivas para México.</p>
-        <form id="lead-form" class="lead-form">
-          <input type="email" id="email" placeholder="tuemail@ejemplo.com" required />
-          <button class="btn primary" type="submit">Suscribirme</button>
-        </form>
-      </div>
-    </section>
-  </main>
+  <section id="about" class="about">
+    <h2>About Us</h2>
+    <p>
+      We are a professional digital marketing team with years of experience in helping 
+      businesses grow online through advanced marketing strategies and creative content.
+    </p>
+  </section>
 
-  <footer class="site-footer">
-    <div class="wrap footer-inner">
-      <p>© <span id="year"></span> BeautyMX — Salud y Belleza Natural. <a href="#">Política de privacidad</a></p>
-      <div class="social">
-        <a href="#" aria-label="Facebook">FB</a>
-        <a href="#" aria-label="Instagram">IG</a>
-      </div>
-    </div>
+  <section id="contact" class="contact">
+    <h2>Contact Us</h2>
+
+    <form id="contactForm">
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <textarea placeholder="Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+
+    <p id="successMsg"></p>
+  </section>
+
+  <footer>
+    <p>© 2025 MarketPro Agency. All Rights Reserved.</p>
   </footer>
 
   <script src="script.js"></script>
