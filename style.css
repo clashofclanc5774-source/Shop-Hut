@@ -1,109 +1,110 @@
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+/* MarketPro marketing site — full brand styles + animations */
+:root{
+  --bg:#0f1724;
+  --accent:#ff7a00;
+  --muted:#8a94a6;
+  --card:#0b1220;
+  --glass: rgba(255,255,255,0.04);
+  --radius:14px;
+  --max-width:1100px;
 }
 
-body{
-  background: #f9f9f9;
-}
+*{box-sizing:border-box;font-family:Inter, system-ui, Arial, sans-serif}
+html,body{margin:0;padding:0;background:linear-gradient(180deg,#071021 0%, #07172a 100%);color:#fff;min-height:100%}
+.container{max-width:var(--max-width);margin:0 auto;padding:28px}
+a{color:var(--accent);text-decoration:none}
 
-header{
-  background: url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format') no-repeat center/cover;
-  height: 100vh;
-  color: white;
-}
+/* Header / Nav */
+.site-header{padding:14px 0 0}
+.nav{display:flex;align-items:center;gap:18px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{height:44px;width:44px;object-fit:contain;border-radius:8px;background:white;padding:6px}
+.brand-name{font-weight:700;font-size:20px;color:#fff}
+.nav-links{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+.nav-links a{color:#e6eef9;opacity:0.9}
+.cta{background:var(--accent);padding:10px 14px;border-radius:10px;color:#081020;font-weight:700}
+.hamburger{display:none;background:transparent;border:none;color:#fff;font-size:22px}
 
-nav{
-  display: flex;
-  justify-content: space-between;
-  padding: 20px 50px;
-}
+/* HERO */
+.hero{display:flex;gap:40px;align-items:center;padding:40px 0}
+.hero-left{flex:1}
+.hero-right{flex:1;display:flex;justify-content:center}
+.headline{font-size:42px;line-height:1.02;margin:0 0 14px;font-weight:800;letter-spacing:-0.4px}
+.sub{color:var(--muted);margin-bottom:18px}
+.hero-ctas{display:flex;gap:12px}
+.btn{display:inline-block;padding:12px 18px;border-radius:10px;font-weight:600}
+.btn-primary{background:var(--accent);color:#081020}
+.btn-ghost{border:1px solid rgba(255,255,255,0.08);background:transparent;color:#fff}
 
-nav ul{
-  display: flex;
-  gap: 25px;
-  list-style: none;
-}
+/* Trust row */
+.trust{margin-top:26px;display:flex;gap:12px;align-items:center;color:var(--muted)}
+.clients img{height:36px;opacity:0.95;margin-left:10px}
 
-nav a{
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
-}
+/* Card / mockup */
+.device{background:linear-gradient(180deg,#07142933, #0a243b66);border-radius:22px;padding:24px;box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+.device img{max-width:320px;display:block}
 
-.logo{
-  font-size: 28px;
-  font-weight: bold;
-}
+/* Sections */
+.section{padding:60px 28px}
+.section-title{font-size:28px;margin:0 0 6px}
+.section-sub{color:var(--muted);margin-bottom:18px}
 
-.hero{
-  margin-top: 150px;
-  text-align: center;
-}
+/* GRID helpers */
+.grid{display:grid;gap:18px}
+.services-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.service{background:var(--glass);padding:18px;border-radius:12px;backdrop-filter:blur(6px);box-shadow:0 6px 24px rgba(0,0,0,0.5)}
+.service h3{margin:0 0 8px;color:#fff}
 
-.hero h1{
-  font-size: 48px;
-}
+/* Pricing */
+.pricing-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.price-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:22px;border-radius:14px;text-align:center;border:1px solid rgba(255,255,255,0.03)}
+.price{font-size:28px;font-weight:800;margin:12px 0}
+.price span{font-size:14px;font-weight:600;color:var(--muted)}
+.price-list{list-style:none;padding:0;margin:10px 0 16px;color:var(--muted)}
+.price-card.popular{border:1px solid rgba(255,130,30,0.18);transform:scale(1.03);box-shadow:0 20px 60px rgba(255,122,0,0.06)}
 
-.btn{
-  display: inline-block;
-  margin-top: 20px;
-  padding: 12px 30px;
-  background: #ff9800;
-  color: white;
-  font-size: 20px;
-  border-radius: 5px;
-  text-decoration: none;
-}
+/* Testimonials */
+.testimonials{display:flex;align-items:center;gap:12px}
+.test-track{display:flex;overflow:hidden;width:100%}
+.testimonial{min-width:100%;padding:20px;background:linear-gradient(180deg,#03121a, #052033);border-radius:12px;margin:0 8px}
+.testimonial p{font-size:18px;line-height:1.5}
+.testimonial cite{display:block;margin-top:12px;color:var(--muted)}
+.arrow{background:transparent;border:none;color:var(--accent);font-size:36px;padding:6px;cursor:pointer}
 
-.services, .about, .contact{
-  padding: 60px 50px;
-  text-align: center;
-}
+/* Blog posts */
+.posts-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:20px}
+.post-card{background:linear-gradient(180deg,#081426, #07111a);padding:16px;border-radius:12px}
+.post-card h4{margin:0 0 8px}
+.post-card p{color:var(--muted);font-size:14px}
 
-.service-box{
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-top: 30px;
-}
+/* Contact grid */
+.contact-grid{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
+.contact-card{background:linear-gradient(180deg,#071022,#041023);padding:18px;border-radius:12px}
+.contact-card input, .contact-card textarea{width:100%;padding:12px;margin:10px 0;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff}
+.muted{color:var(--muted)}
+.small{font-size:13px}
 
-.card{
-  width: 250px;
-  background: white;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+/* Footer */
+.site-footer{padding:36px 0;background:linear-gradient(180deg,#02060a,#041226);border-top:1px solid rgba(255,255,255,0.02)}
+.footer-grid{display:flex;align-items:center;justify-content:space-between;gap:12px}
 
-form{
-  max-width: 400px;
-  margin: auto;
-}
+/* Brand box */
+.brand-box{display:flex;align-items:center;gap:12px;margin-top:18px}
+.brand-logo{height:46px;width:46px}
 
-form input, form textarea{
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 5px;
-  border: 1px solid gray;
-}
+/* WhatsApp floating button */
+#whatsapp-btn{position:fixed;right:20px;bottom:20px;background:linear-gradient(180deg,#25D366,#128C7E);padding:12px;border-radius:14px;z-index:1000;box-shadow:0 12px 24px rgba(0,0,0,0.4)}
+#whatsapp-btn img{height:28px;width:28px;display:block}
 
-button{
-  width: 100%;
-  padding: 12px;
-  background: #ff9800;
-  color: white;
-  border: none;
-  font-size: 18px;
-  border-radius: 5px;
-}
+/* Animations */
+.card-animate{transform:translateY(8px);opacity:0;animation:cardIn .7s forwards ease}
+@keyframes cardIn{to{transform:none;opacity:1}}
 
-footer{
-  background: #222;
-  color: white;
-  padding: 15px;
-  text-align: center;
+/* Responsive */
+@media (max-width:900px){
+  .hero{flex-direction:column}
+  .nav-links{display:none}
+  .hamburger{display:block}
+  .contact-grid{grid-template-columns:1fr}
+  .footer-grid{flex-direction:column;gap:8px}
 }
